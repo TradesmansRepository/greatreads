@@ -1,0 +1,1 @@
+This is the start of a personal project to build a book sharing app whilst becoming familar with Django.
