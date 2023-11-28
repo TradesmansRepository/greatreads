@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 from .models import Book, Author
 
@@ -24,3 +25,7 @@ def book(request, book_id):
 def author(request, author_id):
     author = get_object_or_404(Author, pk=author_id)
     return render(request, "bookshelf/author.html", {"author": author})
+
+def user(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    return render(request, "bookshelf/user.html", {"user": user})
