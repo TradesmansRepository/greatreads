@@ -62,6 +62,15 @@ def index(request):
     }
     return render(request, "bookshelf/index.html", context)
 
+def home(request):
+    books = Book.objects.all()
+    authors = Author.objects.all()
+    context = {
+        "books": books,
+        "authors": authors
+    }
+    return render(request, "bookshelf/home.html", context)
+
 @login_required(login_url='login')
 def book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
@@ -75,4 +84,9 @@ def author(request, author_id):
 @login_required(login_url='login')
 def user(request, user_id):
     user = get_object_or_404(User, pk=user_id)
+    books = UserBooks.objects.filter(user_id)
+    context = {
+        "user": user,
+        "books": books
+    }
     return render(request, "bookshelf/user.html", {"user": user})

@@ -1,3 +1,12 @@
-<h1>{{ book.title }}</h1>
+{% extends 'bookshelf/main.html' %}
+
+{% block content %}
+
+<h1>Book</h1>
+
+<h2>{{ book.title }}</h2>
 <h2>Author: {{ book.author }}</h2>
 <h3>Published: {{ book.published_at }}</h3>
+
+
+{% endblock %}

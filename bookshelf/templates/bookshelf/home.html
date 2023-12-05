@@ -1,0 +1,48 @@
+{% extends 'bookshelf/main.html' %}
+{% load static %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Bookshop, {{request.user}}</h1>
+    </header>
+
+    <div class="container">
+        <div class="gallery">
+        {% if books %}
+            {% for book in books %}
+                <div class="movie">
+                    <img src="https://via.placeholder.com/200x300" alt="Movie 1">
+                    <div class="movie_button">
+                        <button class="btn btn-primary" type="submit">Button</button>
+                    </div>
+                    <div class="overlay">
+                        <div class="overlay-content">
+                            <a href="{% url 'author' book.author_id %}">
+                                <h3>{{book.author}}</h3>
+                            </a>
+                        </div>
+                    </div>
+                    <a href="{% url 'book' book.id %}">
+                        <h3>{{book.title}}</h3>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No books are available.</p>
+        {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock %}

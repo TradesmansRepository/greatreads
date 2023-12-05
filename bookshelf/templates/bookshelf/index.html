@@ -9,6 +9,7 @@
             <li>
                 <a href="{% url 'book' book.id %}">{{ book.title }} - </a>
                 <a href="{% url 'author' book.author_id %}">{{ book.author }}</a>
+                <button type="button" class="btn btn-dark">Dark</button>
             </li>
     {% endfor %}
     </ul>
