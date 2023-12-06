@@ -1,3 +1,10 @@
 <h1>{{ user.first_name }}</h1>
 <h1>{{ user.username }}</h1>
 <h1>{{ user.id }}</h1>
+<h1>{{ user.date_joined }}</h1>
+{% if books %}
+    <h1>{{ books.book }}</h1>
+    <h1>{{ books.user.id }}</h1>
+{% else %}
+    <h1>404 not found</h1>
+{% endif %}

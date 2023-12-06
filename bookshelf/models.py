@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Book(models.Model):
@@ -13,3 +14,8 @@ class Author(models.Model):
     last_name = models.CharField(max_length=100)
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+class UserBook(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now_add=True)

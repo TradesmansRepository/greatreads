@@ -84,9 +84,12 @@ def author(request, author_id):
 @login_required(login_url='login')
 def user(request, user_id):
     user = get_object_or_404(User, pk=user_id)
-    books = UserBooks.objects.filter(user_id)
+    try:
+        user_book = UserBook.objects.get(user=user)
+    except UserBook.DoesNotExist:
+        user_book = None
     context = {
         "user": user,
-        "books": books
+        "books": user_book
     }
-    return render(request, "bookshelf/user.html", {"user": user})
+    return render(request, "bookshelf/user.html", context)
