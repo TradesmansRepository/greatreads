@@ -22,9 +22,6 @@
             {% for book in books %}
                 <div class="movie">
                     <img src="https://via.placeholder.com/200x300" alt="Movie 1">
-                    <div class="movie_button">
-                        <button class="btn btn-primary" type="submit">Button</button>
-                    </div>
                     <div class="overlay">
                         <div class="overlay-content">
                             <a href="{% url 'author' book.author_id %}">

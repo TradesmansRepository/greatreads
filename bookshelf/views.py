@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import MultipleObjectsReturned
 
 from django.contrib.auth import authenticate, login, logout
 
@@ -9,12 +11,12 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
-from .models import Book, Author
+from .models import Book, Author, UserBook
 from .forms import CreatUserForm
 
 def registerPage(request):
     if request.user.is_authenticated:
-        return redirect('index')
+        return redirect('home')
     else:
         form = CreatUserForm()
         if request.method == 'POST':
@@ -31,7 +33,7 @@ def registerPage(request):
 
 def loginPage(request):
     if request.user.is_authenticated:
-        return redirect('index')
+        return redirect('home')
     else:
         if request.method == 'POST':
             username = request.POST.get('username')
@@ -41,7 +43,7 @@ def loginPage(request):
 
             if user is not None:
                 login(request, user)
-                return redirect('index')
+                return redirect('home')
             else:
                 messages.info(request, 'Username or password is incorrect.')
 
@@ -53,15 +55,6 @@ def logoutUser(request):
     return redirect('login')
 
 @login_required(login_url='login')
-def index(request):
-    books = Book.objects.all()
-    authors = Author.objects.all()
-    context = {
-        "books": books,
-        "authors": authors
-    }
-    return render(request, "bookshelf/index.html", context)
-
 def home(request):
     books = Book.objects.all()
     authors = Author.objects.all()
@@ -74,7 +67,25 @@ def home(request):
 @login_required(login_url='login')
 def book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-    return render(request, "bookshelf/book.html", {"book": book})
+    return render(request, "bookshelf/book.html", {"book": book,})
+
+def add_userbook(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    user = request.user
+    try:
+        userbook = UserBook.objects.get(book=book, user=user)
+    except (KeyError, UserBook.DoesNotExist):
+        print('does not exist')
+        u = UserBook(user=user, book=book)
+        u.save()
+        messages.success(request, book + ' was added to your bookshelf')
+    except MultipleObjectsReturned:
+        print('multiple already exist')
+        messages.error(request, "this book is already on your bookshelf")
+    else:
+        print('already exists')
+        messages.error(request, "this book is already on your bookshelf")
+    return HttpResponseRedirect(reverse("home"))
 
 @login_required(login_url='login')
 def author(request, author_id):
@@ -83,13 +94,10 @@ def author(request, author_id):
 
 @login_required(login_url='login')
 def user(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
-    try:
-        user_book = UserBook.objects.get(user=user)
-    except UserBook.DoesNotExist:
-        user_book = None
+    user = request.user
+    user_books = UserBook.objects.filter(user=user)
     context = {
         "user": user,
-        "books": user_book
+        "user_books": user_books
     }
     return render(request, "bookshelf/user.html", context)

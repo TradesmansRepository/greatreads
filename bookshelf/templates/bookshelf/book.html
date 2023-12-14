@@ -8,5 +8,15 @@
 <h2>Author: {{ book.author }}</h2>
 <h3>Published: {{ book.published_at }}</h3>
 
+<form action="{% url 'add_userbook' book.id %}" method="POST">
+    {% csrf_token %}
+    <!-- {% if error_message %}<p><strong>{{error_message}}</strong></p>{% endif %} -->
+    <!-- <input type="submit" name="book" value="Add to Bookshelf" id="{{book.id}}"> -->
+    <button class="btn btn-primary" type="submit" name="Add">Add to Bookshelf</button>
+</form>
+{% for message in messages %}
+    <p id="messages">{{message}}</p>
+{% endfor %}
+
 
 {% endblock %}

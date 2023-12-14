@@ -1,10 +1,39 @@
-<h1>{{ user.first_name }}</h1>
-<h1>{{ user.username }}</h1>
-<h1>{{ user.id }}</h1>
-<h1>{{ user.date_joined }}</h1>
-{% if books %}
-    <h1>{{ books.book }}</h1>
-    <h1>{{ books.user.id }}</h1>
-{% else %}
-    <h1>404 not found</h1>
-{% endif %}
+{% extends 'bookshelf/main.html' %}
+{% load static %}
+
+
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Welcome to your personal bookshelf, {{user}}</h1>
+    </header>
+    <div class="container">
+        <div class="gallery">
+        {% if user_books %}
+            {% for user_book in user_books %}
+                <div class="movie">
+                    <img src="https://via.placeholder.com/200x300" alt="Movie 1">
+                    <div class="overlay">
+                        <div class="overlay-content">
+                            <a href="{% url 'author' user_book.book.author.id %}">
+                                <h3>{{user_book.book.author}}</h3>
+                            </a>
+                        </div>
+                    </div>
+                    <a href="{% url 'book' user_book.book.id %}">
+                        <h3>{{user_book.book.title}}</h3>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No books added to bookshelf yet.</p>
+        {% endif %}
+        </div>
+    </div>
+</body>
+
+
+{% endblock %}
