@@ -78,7 +78,7 @@ def add_userbook(request, book_id):
         print('does not exist')
         u = UserBook(user=user, book=book)
         u.save()
-        messages.success(request, book + ' was added to your bookshelf')
+        messages.success(request, book.title + ' was added to your bookshelf')
     except MultipleObjectsReturned:
         print('multiple already exist')
         messages.error(request, "this book is already on your bookshelf")
