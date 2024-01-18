@@ -75,15 +75,12 @@ def add_userbook(request, book_id):
     try:
         userbook = UserBook.objects.get(book=book, user=user)
     except (KeyError, UserBook.DoesNotExist):
-        print('does not exist')
         u = UserBook(user=user, book=book)
         u.save()
         messages.success(request, book.title + ' was added to your bookshelf')
     except MultipleObjectsReturned:
-        print('multiple already exist')
         messages.error(request, "this book is already on your bookshelf")
     else:
-        print('already exists')
         messages.error(request, "this book is already on your bookshelf")
     return HttpResponseRedirect(reverse("home"))
 
