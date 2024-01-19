@@ -4,15 +4,12 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import MultipleObjectsReturned
-
 from django.contrib.auth import authenticate, login, logout
-
 from django.contrib import messages
-
 from django.contrib.auth.decorators import login_required
-
 from .models import Book, Author, UserBook
 from .forms import CreatUserForm
+from datetime import datetime
 
 def registerPage(request):
     if request.user.is_authenticated:
@@ -75,7 +72,7 @@ def add_userbook(request, book_id):
     try:
         userbook = UserBook.objects.get(book=book, user=user)
     except (KeyError, UserBook.DoesNotExist):
-        u = UserBook(user=user, book=book)
+        u = UserBook(user=user, book=book, created_at=datetime.now())
         u.save()
         messages.success(request, book.title + ' was added to your bookshelf')
     except MultipleObjectsReturned:

@@ -18,4 +18,6 @@ class Author(models.Model):
 class UserBook(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE) 
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(null=True)
+    deleted_at = models.DateTimeField(null=True)
     updated_at = models.DateTimeField(auto_now_add=True)

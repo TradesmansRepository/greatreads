@@ -2,6 +2,7 @@ from django.test import TestCase, Client, RequestFactory
 from django.contrib.auth.models import User
 from .models import Book, Author, UserBook
 from django.urls import reverse
+from datetime import datetime
 
 class basicAuthTestCase(TestCase):
     def setUp(self):
@@ -39,6 +40,7 @@ class UserBookTestCase(TestCase):
         url = reverse('add_userbook', args=(book.id,))
         response = c.post(url, {"user": user.id, "book": book.id})
         self.assertEqual(UserBook.objects.filter(id=1).exists(), True)
+        self.assertEqual(UserBook.objects.get(id=1).created_at.replace(microsecond=0), datetime.now().replace(microsecond=0))
 
     def test_userbook_not_duplicated_if_already_exists(self):
         c = Client()
