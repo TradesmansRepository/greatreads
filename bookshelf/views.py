@@ -81,6 +81,19 @@ def add_userbook(request, book_id):
         messages.error(request, "this book is already on your bookshelf")
     return HttpResponseRedirect(reverse("home"))
 
+def remove_userbook(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    user = request.user
+    try:
+        userbook = UserBook.objects.get(book=book, user=user)
+    except (KeyError, UserBook.DoesNotExist):
+        messages.error(request, "this book is not on your bookshelf")
+    else:
+        userbook.deleted_at = datetime.now()
+        userbook.save()
+        messages.success(request, book.title + ' was removed from your bookshelf')
+    return HttpResponseRedirect(reverse("home"))
+
 @login_required(login_url='login')
 def author(request, author_id):
     author = get_object_or_404(Author, pk=author_id)
@@ -90,8 +103,16 @@ def author(request, author_id):
 def user(request, user_id):
     user = request.user
     user_books = UserBook.objects.filter(user=user)
+    for user_book in user_books:
+        if user_book.deleted_at is None:
+            return user_book
+        elif user_book.created_at > user_book.deleted_at:
+            return userbook
+
+    # user_books = user_books.filter(created_at__lte=user_books.deleted_at)
+    # print("book id = ", user_books[0].book.id, "userbook user id = ", user_books[0].user.id, "userbook id = ", user_books[0].id, "request user id = ", user.id, "user id = ", user_id, user_books[0].created_at)
     context = {
         "user": user,
-        "user_books": user_books
+        "user_books": user_book
     }
     return render(request, "bookshelf/user.html", context)

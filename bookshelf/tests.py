@@ -51,3 +51,14 @@ class UserBookTestCase(TestCase):
         url = reverse('add_userbook', args=(book.id,))
         response = c.post(url, {"user": user.id, "book": book.id}, follow=True)
         self.assertEqual(UserBook.objects.filter(id=1).count(), 1)
+
+    def test_user_can_remove_book(self):
+        c = Client()
+        book = Book.objects.get(id=1)
+        user = User.objects.get(id=1)
+        c.force_login(user)
+        userbook = UserBook.objects.create(id=1, user=user, book=book, created_at="2024-01-01 14:00:00.000000")
+        url = reverse('remove_userbook', args=(book.id,))
+        response = c.post(url, {"user": user.id, "book": book.id})
+        self.assertEqual(UserBook.objects.filter(id=1).exists(), True)
+        self.assertEqual(UserBook.objects.get(id=1).deleted_at.replace(microsecond=0), datetime.now().replace(microsecond=0))

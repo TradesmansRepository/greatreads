@@ -15,4 +15,6 @@ urlpatterns = [
     path("<int:user_id>/user/", views.user, name="user"),
     # example: /bookshelf/1/add/
     path("<int:book_id>/add/", views.add_userbook, name="add_userbook"),
+    # example: /bookshelf/1/remove/
+    path("<int:book_id>/remove/", views.remove_userbook, name="remove_userbook"),
 ]
