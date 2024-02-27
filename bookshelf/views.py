@@ -10,6 +10,9 @@ from django.contrib.auth.decorators import login_required
 from .models import Book, Author, UserBook
 from .forms import CreatUserForm
 from datetime import datetime
+from .serializers import *
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
 
 def registerPage(request):
     if request.user.is_authenticated:
@@ -62,9 +65,32 @@ def home(request):
     return render(request, "bookshelf/home.html", context)
 
 @login_required(login_url='login')
+@api_view(['GET'])
+def home_api(request):
+    if request.method == 'GET':
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
+        return JsonResponse({"books": serializer.data})
+
+@login_required(login_url='login')
 def book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     return render(request, "bookshelf/book.html", {"book": book,})
+
+def book_api(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    serializer = BookSerializer(book)
+    return JsonResponse({'book': serializer.data})
+
+@login_required(login_url='login')
+def author(request, author_id):
+    author = get_object_or_404(Author, pk=author_id)
+    return render(request, "bookshelf/author.html", {"author": author})
+
+def author_api(request, author_id):
+    author = get_object_or_404(Author, pk=author_id)
+    serializer = AuthorSerializer(author)
+    return JsonResponse(serializer.data)
 
 def add_userbook(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
@@ -94,10 +120,6 @@ def remove_userbook(request, book_id):
         messages.success(request, book.title + ' was removed from your bookshelf')
     return HttpResponseRedirect(reverse("home"))
 
-@login_required(login_url='login')
-def author(request, author_id):
-    author = get_object_or_404(Author, pk=author_id)
-    return render(request, "bookshelf/author.html", {"author": author})
 
 @login_required(login_url='login')
 def user(request, user_id):
@@ -116,3 +138,9 @@ def user(request, user_id):
         "user_books": user_book
     }
     return render(request, "bookshelf/user.html", context)
+
+def user_api(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    # user_books = UserBook.objects.filter(user=user)
+    serializer = UserSerializer(user)
+    return JsonResponse(serializer.data, safe=False)
