@@ -12,7 +12,7 @@ from .serializers import *
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 
-@login_required(login_url='login')
+@login_required(login_url='users:login')
 def home(request):
     books = Book.objects.all()
     authors = Author.objects.all()
@@ -22,7 +22,7 @@ def home(request):
     }
     return render(request, "home.html", context)
 
-@login_required(login_url='login')
+@login_required(login_url='users:login')
 @api_view(['GET'])
 def home_api(request):
     if request.method == 'GET':
@@ -30,7 +30,7 @@ def home_api(request):
         serializer = BookSerializer(books, many=True)
         return JsonResponse({"books": serializer.data})
 
-@login_required(login_url='login')
+@login_required(login_url='users:login')
 def book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     return render(request, "book.html", {"book": book,})
@@ -40,7 +40,7 @@ def book_api(request, book_id):
     serializer = BookSerializer(book)
     return JsonResponse({'book': serializer.data})
 
-@login_required(login_url='login')
+@login_required(login_url='users:login')
 def author(request, author_id):
     author = get_object_or_404(Author, pk=author_id)
     return render(request, "author.html", {"author": author})
@@ -79,7 +79,7 @@ def remove_userbook(request, book_id):
     return HttpResponseRedirect(reverse("home"))
 
 
-@login_required(login_url='login')
+@login_required(login_url='users:login')
 def user(request, user_id):
     user = request.user
     user_books = UserBook.objects.filter(user=user)
