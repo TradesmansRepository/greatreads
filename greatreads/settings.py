@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['testserver', '127.0.0.1']
 
+INTERNAL_IPS = ["127.0.0.1",]
+
 
 # Application definition
 
@@ -40,6 +42,9 @@ INSTALLED_APPS = [
     'apps.bookshelf.apps.BookshelfConfig',
     'rest_framework',
     'corsheaders',
+    'tailwind',
+    'theme',
+    'django_browser_reload',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -73,6 +79,8 @@ TEMPLATES = [
         },
     },
 ]
+
+TAILWIND_APP_NAME = 'theme'
 
 LOGIN_REDIRECT_URL = "/"
 
