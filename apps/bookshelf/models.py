@@ -24,3 +24,5 @@ class UserBook(models.Model):
     created_at = models.DateTimeField(null=True)
     deleted_at = models.DateTimeField(null=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.user} - {self.book}"
