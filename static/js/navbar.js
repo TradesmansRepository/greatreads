@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get the user profile button and the dropdown menu
     const userProfileButton = document.getElementById('user-menu-button');
     // const userProfileMenu = document.getElementById('menu');
-    const userProfileMenu = decument.getElementByRole('menu');
+    const userProfileMenu = decument.getElementById('menu');
   
     // Add click event listener to the user profile button
     userProfileButton.addEventListener('click', function() {
