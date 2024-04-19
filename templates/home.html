@@ -21,7 +21,7 @@
         {% if books %}
             {% for book in books %}
                 <div class="movie">
-                    <img src="https://via.placeholder.com/200x300" alt="Movie 1">
+                    <img src={{book.image_url_s}} alt="Movie 1">
                     <div class="overlay">
                         <div class="overlay-content">
                             <a href="{% url 'author' book.author_id %}">
