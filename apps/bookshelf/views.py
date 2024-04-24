@@ -1,17 +1,18 @@
+from .models import Book, Author, UserBook
+from .serializers import *
+from rest_framework.decorators import api_view
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Book, Author, UserBook
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from datetime import datetime
-from .serializers import *
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from django.db.models import F, Q
 
 @login_required(login_url='users:login')
 def home(request):
@@ -38,7 +39,18 @@ def home_api(request):
 @login_required(login_url='users:login')
 def book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-    return render(request, "book.html", {"book": book,})
+    # is book exists in user's bookshelf then true
+    user = request.user
+    userbook = UserBook.objects.filter(Q(user=user) & Q(book=book) & (Q(created_at__gt=F('deleted_at')) | Q(deleted_at__isnull=True)))
+    if userbook:
+        is_book_in_bookshelf = True
+    else:
+        is_book_in_bookshelf = False
+    context = {
+        "book": book,
+        "is_book_in_bookshelf": is_book_in_bookshelf
+    }
+    return render(request, "book.html", context)
 
 def book_api(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
@@ -59,16 +71,17 @@ def add_userbook(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     user = request.user
     try:
-        userbook = UserBook.objects.get(book=book, user=user)
+        # userbook = UserBook.objects.get(book=book, user=user)
+        userbook = UserBook.objects.get(Q(book=book) & Q(user_id=user.id) & (Q(created_at__gt=F('deleted_at')) | Q(deleted_at__isnull=True)))
     except (KeyError, UserBook.DoesNotExist):
         u = UserBook(user=user, book=book, created_at=datetime.now())
         u.save()
         messages.success(request, book.title + ' was added to your bookshelf')
     except MultipleObjectsReturned:
-        messages.error(request, "this book is already on your bookshelf")
+        messages.error(request, "this book is already on your bookshelf_1")
     else:
-        messages.error(request, "this book is already on your bookshelf")
-    return HttpResponseRedirect(reverse("home"))
+        messages.error(request, "this book is already on your bookshelf_2")
+    return HttpResponseRedirect(reverse("user", args=(user.id,)))
 
 def remove_userbook(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
@@ -83,22 +96,15 @@ def remove_userbook(request, book_id):
         messages.success(request, book.title + ' was removed from your bookshelf')
     return HttpResponseRedirect(reverse("home"))
 
-
 @login_required(login_url='users:login')
 def user(request, user_id):
     user = request.user
-    user_books = UserBook.objects.filter(user=user)
-    for user_book in user_books:
-        if user_book.deleted_at is None:
-            return user_book
-        elif user_book.created_at > user_book.deleted_at:
-            return userbook
+    deleted_at = UserBook.objects.filter(user=user).values_list('deleted_at')
+    user_books = UserBook.objects.filter(Q(user_id=user.id) & (Q(created_at__gt=F('deleted_at')) | Q(deleted_at__isnull=True)))
 
-    # user_books = user_books.filter(created_at__lte=user_books.deleted_at)
-    # print("book id = ", user_books[0].book.id, "userbook user id = ", user_books[0].user.id, "userbook id = ", user_books[0].id, "request user id = ", user.id, "user id = ", user_id, user_books[0].created_at)
     context = {
         "user": user,
-        "user_books": user_book
+        "user_books": user_books
     }
     return render(request, "user.html", context)
 
