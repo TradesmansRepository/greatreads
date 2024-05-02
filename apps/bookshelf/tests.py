@@ -1,6 +1,7 @@
 from django.test import TestCase, Client, RequestFactory
 from django.contrib.auth.models import User
-from .models import Book, Author, UserBook
+from django.contrib.messages import get_messages
+from apps.bookshelf.models import Book, Author, UserBook
 from django.urls import reverse
 from datetime import datetime
 
