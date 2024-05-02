@@ -51,14 +51,11 @@ def author(request, author_id):
 @login_required(login_url='users:login')
 def user(request, user_id):
     user = request.user
-    deleted_at = UserBook.objects.filter(user_id=user.id).values_list('deleted_at')
-    user_books = UserBook.objects.filter(
-        Q(user_id=user.id) & 
-        (Q(created_at__gt=F('deleted_at')) | Q(deleted_at__isnull=True))
-    )
+    # if book is liked by user then add to user page
+    liked_books = Book.objects.filter(liked=user)
     context = {
         "user": user,
-        "user_books": user_books
+        "liked_books": liked_books
     }
     return render(request, "bookshelf/user.html", context)
 
