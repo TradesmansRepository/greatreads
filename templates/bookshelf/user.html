@@ -16,7 +16,6 @@
     <header>
         <h1>Welcome to your bookshelf, {{user}}</h1>
     </header>
-    <h3>{{ deleted_at }}</h3>
     <div class="container">
         <div class="gallery">
         {% if liked_books %}
@@ -33,6 +32,7 @@
                     <a href="{% url 'bookshelf:author' liked_book.author.id %}">
                         <h3>{{liked_book.author}}</h3>
                     </a>
+                </div>
             {% endfor %}
         {% else %}
             <p>No books added to bookshelf yet.</p>
