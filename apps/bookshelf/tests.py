@@ -30,7 +30,7 @@ class basicAuthTestCase(TestCase):
 class UserBookTestCase(TestCase):
     def setUp(self):
         User.objects.create(id=1, username='jammie', password='password')
-        Author.objects.create(id=1, first_name='Dave')
+        Author.objects.create(id=1, name='Dave')
         Book.objects.create(id=1, published_at='1995-08-09', author=Author.objects.first())
 
     def test_user_can_add_book(self):
@@ -51,7 +51,11 @@ class UserBookTestCase(TestCase):
         userbook = UserBook.objects.create(id=1, user=user, book=book)
         url = reverse('add_userbook', args=(book.id,))
         response = c.post(url, {"user": user.id, "book": book.id}, follow=True)
-        self.assertEqual(UserBook.objects.filter(id=1).count(), 1)
+        print(UserBook.objects.filter(book_id=1, user_id=1))
+        # print(response.context['messages'][0])
+        messages = list(get_messages(response.wsgi_request))
+        print(str(messages[0]))
+        self.assertEqual(UserBook.objects.filter(book_id=1, user_id=1).count(), 1)
 
     def test_user_can_remove_book(self):
         c = Client()

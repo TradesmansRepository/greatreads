@@ -20,7 +20,7 @@
     </style>
 
     <header>
-        <h1>Welcome to the Bookshop, {{request.user}}</h1>
+        <h1>Welcome to the Library, {{request.user}}. Why don't you click on a book and add it to your bookshelf by liking it!</h1>
     </header>
 
     <div class="container">
@@ -31,12 +31,12 @@
                     <img src={{book.image_url_s}} alt="Movie 1">
                     <div class="overlay">
                         <div class="overlay-content">
-                            <a href="{% url 'book' book.id %}">
+                            <a href="{% url 'bookshelf:book' book.id %}">
                                 <h3>{{book.title}}</h3>
                             </a>
                         </div>
                     </div>
-                    <a href="{% url 'author' book.author_id %}">
+                    <a href="{% url 'bookshelf:author' book.author_id %}">
                         <h3>{{book.author}}</h3>
                     </a>
                 </div>

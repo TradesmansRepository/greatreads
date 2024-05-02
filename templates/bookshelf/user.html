@@ -14,26 +14,25 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to your personal bookshelf, {{user}}</h1>
+        <h1>Welcome to your bookshelf, {{user}}</h1>
     </header>
     <h3>{{ deleted_at }}</h3>
     <div class="container">
         <div class="gallery">
-        {% if user_books %}
-            {% for user_book in user_books %}
+        {% if liked_books %}
+            {% for liked_book in liked_books %}
                 <div class="movie">
-                    <img src="{{user_book.book.image_url_s}}" alt="Movie 1">
+                    <img src="{{liked_book.image_url_s}}" alt="Movie 1">
                     <div class="overlay">
                         <div class="overlay-content">
-                            <a href="{% url 'book' user_book.book.id %}">
-                                <h3>{{user_book.book.title}}</h3>
+                            <a href="{% url 'bookshelf:book' liked_book.id %}">
+                                <h3>{{liked_book.title}}</h3>
                             </a>
                         </div>
                     </div>
-                    <a href="{% url 'author' user_book.book.author.id %}">
-                        <h3>{{user_book.book.author}}</h3>
+                    <a href="{% url 'bookshelf:author' liked_book.author.id %}">
+                        <h3>{{liked_book.author}}</h3>
                     </a>
-                </div>
             {% endfor %}
         {% else %}
             <p>No books added to bookshelf yet.</p>

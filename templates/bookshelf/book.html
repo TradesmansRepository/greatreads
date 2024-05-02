@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>Book</h1>
+<h2>{{ book.title }}</h2>
+<img src="{{book.image_url_s}}" alt="">
+<h2>Author: {{ book.author }}</h2>
+<h3>Published: {{ book.published_at }}</h3>
+<h3> {{ user.id }} {{ book.id }}</h3>
+<h3>{{is_book_in_bookshelf}}</h3>
+{% include 'bookshelf/like_button.html' %}
+
+{% for message in messages %}
+    <p id="messages">{{message}}</p>
+{% endfor %}
+
+{% endblock %}

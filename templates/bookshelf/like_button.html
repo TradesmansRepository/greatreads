@@ -1,0 +1,11 @@
+<form action="{% url 'bookshelf:like_book' %}" method="POST" class="like-form" id="{{book.id}}">
+    {% csrf_token %}
+    <input type="hidden" name="book_id" value="{{book.id}}" />
+    <button type="submit" class="like-btn{{book.id}}">
+        {% if user not in book.liked.all %}
+        <span class="like-text{{book.id}} label-like-comment-share">Like?</span>
+        {% else %}
+        <span class="like-text{{book.id}} text-like_unlike-span label-like-comment-share">Unlike?</span>
+        {% endif %}
+    </button>
+</form>
